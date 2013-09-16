@@ -49,11 +49,11 @@ c = soup.find('div', 'container')
 for i in c.find_all('div', 'row')[1:]:
     family, total, month, week, yesterday, rate = [k.text for k in i.find_all('div', 'column')]
 
-    s = FontStats.query.filter_by(family=str(family).lower()).first()
+    s = FontStats.query.filter_by(family=str(family)).first()
     if not s:
         s = FontStats()
 
-    s.family = str(family).lower()
+    s.family = str(family)
     s.total = int(total.replace(',',''))
     s.month = int(month.replace(',',''))
     s.week = int(week.replace(',',''))
