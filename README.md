@@ -40,6 +40,10 @@ During the development process you may wish to be run a fake mail server:
 
     $ make mail;
 
+You can also run the test suites from the command line:
+
+    $ python checker/runner.py
+
 ## Development
 
 A series of videos explaining the project are posting on the [Font Bakery tumblr](http://fontbakery.tumblr.com). 
