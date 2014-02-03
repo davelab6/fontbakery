@@ -1,8 +1,156 @@
-{% macro font_card(repo) %}
-    <h4><a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a> <i class="fa fa-shield text-success"></i></h4>
 
-<p>    <strong>Stats:</strong><br>
-    Total: {{ repo.family_stat.total }} <br>
-    Month: {{ repo.family_stat.month }} <br>
-    Week: {{ repo.family_stat.total }}<br></p>
+{% macro font_card(repo) %}
+
+{% set stateDict = {
+    'copyright_license': {
+        'icon': 'file-o',
+        'ofl': _('Open Font Licence v1.1'),
+        'apache': _('Apache Licence v2.0'),
+        'ufl': _('Ubuntu Font Licence v1.0'),
+        },
+    'copyright_notice': {
+        'icon': 'file-o',
+        },
+    'trademark_notice': {
+        'icon': 'tumblr',
+        'yes': _('<i class="fa fa-exclamation-triangle"></i> Trademark is asserted'),
+        'no': _('<i class="fa fa-thumbs-up"></i> Trademark not asserted'),
+        },
+    'trademark_permission': {
+        'icon': 'tumblr',
+        'yes': _('<i class="fa fa-thumbs-up"></i> Trademark use is permitted'),
+        'no': _('<i class="fa fa-thumbs-down"></i> Trademark use not permitted'),
+        },
+    'rfn_asserted': {
+        'icon': 'strikethrough',
+        'True': _('Y'),
+        'False': _('N'),
+        },
+    'rfn_permission': {
+        'icon': 'strikethrough',
+        'True': _('Y'),
+        'False': _('N'),
+        },
+    'source_cff_filetype': {
+        'icon': 'file',
+        'True': _('Y'),
+        'False': _('N'),
+        },
+    'source_drawing_filetype': {
+        'icon': 'file',
+        'None': '-',
+        'UFO': _('U'),
+        'SFD': _('S'),
+        'VFB': _('V'),
+        'glyphs': _('G'),
+        },
+    'source_ttf_filetype': {
+        'icon': 'file',
+        'None': '-',
+        'OTF': _('O'),
+        'UFO': _('U'),
+        'SFD': _('S'),
+        'VFB': _('V'),
+        'glyphs': _('G'),
+        },
+    'price_design_usd':{
+        'icon': 'usd',
+        },
+    'price_total_usd':{
+        'icon': 'usd',
+        },
+    'hinting_level': {
+        'icon': 'search-plus',
+        '1': '-',
+        '2': _('N'),
+        '3': _('A'),
+        '4': _('T'),
+        '5': _('H'),
+        },
+    'vendor_category': {
+        'icon': 'user',
+        '1': _('H'),
+        '2': _('G'),
+        '3': _('M'),
+        },
+    'vendor_quality': {
+        'icon': 'user',
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'design_quality': {
+        'icon': 'pencil',
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'hinting_quality': {
+        'icon': 'search-plus',
+        '1': '1',
+        '2': '2',
+        '3': '3',
+        '4': '4',
+        '5': '5',
+        },
+    'prints_ok': {
+        'icon': 'print',
+        'True': _('Y'),
+        'False': _('N'),
+        },
+    'stats_family_name':{
+        'icon': 'sort-numeric-desc'
+        },
+    'design_category':{
+        'icon': 'pencil',
+        'sans': '&#120236;',
+        'serif': '&#65325;',
+        'script': '&#2133;',
+        'display': 'D',
+        },
+    } %}
+
+<span class="pull-right">
+  <a class="btn btn-xs btn-link"><i class="fa fa-cog"></i></a>
+
+  <a class="btn btn-xs btn-info" href="{{ url_for('project.pull', project_id = repo.id )}}" data-confirm="{{ _('Sync upstream data?') }}" data-title="{{ _('Confirm') }}"><i class="fa fa-refresh"></i></a>
+  <a class="btn btn-xs btn-danger" href="{{ url_for('settings.delclone', project_id = repo.id )}}" data-confirm="{{ _('Do you really want to remove this repository?') }}" data-title="{{ _('Are you sure?') }}"><i class="fa fa-trash-o"></i></a>
+</span>
+
+<h3><a href="{{ url_for('project.setup', project_id = repo.id )}}">{{ repo.title }}</a></h3>
+<small>{{ repo.clone }}</small>
+<!-- {{ repo.config }} -->
+
+
+<ul class="fa-ul list-inline">
+{% for item, value in stateDict.iteritems() | sort %}
+  <li><i class="fa fa-{{ value['icon'] | d('square') }}"></i> 
+  <a href="{{ url_for('project.setup', project_id = repo.id ) + '#' + item }}">{{ item }}</a>
+  
+      {% if item == 'stats_family_name' %}
+          <i class="fa fa-check-square-o"></i>
+      {% elif repo.config['state'][item] in value.iterkeys() %}
+          {{ value[repo.config['state'][item]] | safe }}
+      {% else %}
+          {{ repo.config['state'][item] }}
+      {% endif %}
+  </li>
+{% else %}
+
+{% endfor %}
+</ul>
+
+{% if repo.family_stat %}
+<p>
+  <strong>Stats:</strong><br>
+  Total: {{ repo.family_stat.total }} <br>
+  Month: {{ repo.family_stat.month }} <br>
+  Week: {{ repo.family_stat.total }}
+</p>
+{% endif %}
+
 {% endmacro %}
