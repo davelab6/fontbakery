@@ -28,6 +28,7 @@ from .realtime import realtime
 from .api import api
 from .settings import settings
 from .project import project
+from .blobdata import blobdata
 # For import *
 __all__ = ['create_app', 'init_app']
 
@@ -36,7 +37,7 @@ def create_app(app_name=__name__):
     # Flask application constructor. Doesn't init extensions and blueprints
     # because caller can use its own configuration.
 
-    app = Flask(app_name, static_folder = os.path.join(
+    app = Flask(app_name, static_folder=os.path.join(
         os.path.dirname(__file__), '..', 'static') )
     return app
 
@@ -48,6 +49,7 @@ def init_app(app):
     app.register_blueprint(realtime)
     app.register_blueprint(settings)
     app.register_blueprint(api)
+    app.before_request(blobdata)
     # keep it last
     app.register_blueprint(project)
 
