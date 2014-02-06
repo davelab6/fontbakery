@@ -28,7 +28,7 @@ from .realtime import realtime
 from .api import api
 from .settings import settings
 from .project import project
-from .blobdata import blobdata
+# from .blobdata import blobdata
 # For import *
 __all__ = ['create_app', 'init_app']
 
@@ -49,7 +49,7 @@ def init_app(app):
     app.register_blueprint(realtime)
     app.register_blueprint(settings)
     app.register_blueprint(api)
-    app.before_request(blobdata)
+    # app.register_blueprint(blobdata)
     # keep it last
     app.register_blueprint(project)
 
